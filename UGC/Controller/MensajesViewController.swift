@@ -14,7 +14,7 @@ struct StrechyHeader
     let headerCut : CGFloat = 0
 }
 
-class MensajesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate
+class MensajesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate, UIImagePickerControllerDelegate, UINavigationControllerDelegate
 {
     
     @IBOutlet var mensajesTableView: UITableView!
@@ -29,18 +29,21 @@ class MensajesViewController: UIViewController, UITableViewDelegate, UITableView
     
     @IBOutlet var comentarioTextField: UITextField!
     
+    let apiManager = APIManager()
+    
     var headerView : UIView!
     var newHeaderLayer : CAShapeLayer!
     
     var usuario:Usuario!
     var info:Info!
     
-    let apiManager = APIManager()
     var infoMensajes = [InfoMensaje]()
     
     var images = [UIImage]()
     
     @IBOutlet var comentarioBarConstraint: NSLayoutConstraint!
+    
+    var imagePicker: UIImagePickerController!
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -48,14 +51,7 @@ class MensajesViewController: UIViewController, UITableViewDelegate, UITableView
         mensajesTableView.delegate = self
         mensajesTableView.dataSource = self
         
-        apiManager.buscarMensajes(codigoUsuario: usuario.codigousuario, codigoCliente: info.codigo) { (infos) in
-            
-            self.infoMensajes = infos
-            print(self.infoMensajes.count)
-            self.mensajesTableView.reloadData()
-            self.animateTable()
-        }
-        
+        buscarMensajes()
         
         infoView.labelNombreUsuario.text = info.razonSocial
         infoView.labelDescripcionUsuario.text = info.nombre
@@ -89,6 +85,17 @@ class MensajesViewController: UIViewController, UITableViewDelegate, UITableView
     override open func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(true)
         NotificationCenter.default.removeObserver(self)
+    }
+    
+    func buscarMensajes()
+    {
+        apiManager.buscarMensajes(codigoUsuario: usuario.codigousuario, codigoCliente: info.codigo) { (infos) in
+            
+            self.infoMensajes = infos
+           
+            self.mensajesTableView.reloadData()
+            self.animateTable()
+        }
     }
     
     func updateView()
@@ -293,7 +300,8 @@ class MensajesViewController: UIViewController, UITableViewDelegate, UITableView
 //        }
 //    }
     
-    @objc func keyboardWillShow(notification: Notification) {
+    @objc func keyboardWillShow(notification: Notification)
+    {
         let userInfo:NSDictionary = notification.userInfo! as NSDictionary
         let keyboardFrame:NSValue = userInfo.value(forKey: UIKeyboardFrameEndUserInfoKey) as! NSValue
         let keyboardRectangle = keyboardFrame.cgRectValue
@@ -306,7 +314,8 @@ class MensajesViewController: UIViewController, UITableViewDelegate, UITableView
         }
     }
     
-    @objc func keyboardWillHide(notification: Notification) {
+    @objc func keyboardWillHide(notification: Notification)
+    {
         // keyboard is dismissed/hidden from the screen
         UIView.animate(withDuration: 0.25) {
             self.comentarioBarConstraint.constant = 0
@@ -314,13 +323,64 @@ class MensajesViewController: UIViewController, UITableViewDelegate, UITableView
         }
     }
     
-    @IBAction func botonCargarFoto(_ sender: Any) {
+    @IBAction func botonCargarFoto(_ sender: Any)
+    {
+        openCamera()
     }
     
     
-    @IBAction func botonTomarFoto(_ sender: Any) {
+    @IBAction func botonTomarFoto(_ sender: Any)
+    {
+        openLibrary()
     }
     
+    @IBAction func botonEnviarMensaje(_ sender: Any)
+    {
+        apiManager.enviarMensajeSinImagen(usuario: usuario, info: info, mensaje: comentarioTextField.text!) { (result) in
+            self.dismissKeyboard()
+            if result == "OK"
+            {
+                self.buscarMensajes()
+            }
+            else
+            {
+                print("error")
+            }
+        }
+    }
+    
+    func openCamera() {
+        imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.sourceType = .camera
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    func openLibrary() {
+        imagePicker = UIImagePickerController()
+        imagePicker.delegate = self
+        imagePicker.sourceType = .photoLibrary
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
+
+        
+        apiManager.enviarMensajeConImagen(usuario: usuario, info: self.info, imagen: image) { (result) in
+            self.dismissKeyboard()
+            if result == "OK"
+            {
+                self.buscarMensajes()
+            }
+            else
+            {
+                print("error")
+            }
+        }
+        
+        dismiss(animated:true, completion: nil)
+    }
 }
 
 extension UIViewController

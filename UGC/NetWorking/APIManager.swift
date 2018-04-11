@@ -108,7 +108,7 @@ class APIManager
         let path = "services.php?option=listamensajes&usuario=\(codigoUsuario)&cliente=\(codigoCliente)"
         let url = baseURL+path
         var infos = [InfoMensaje]()
-        print(url)
+
         SVProgressHUD.show()
         Alamofire.request(url, method: .get, parameters: nil).responseJSON{ response in
             
@@ -151,4 +151,119 @@ class APIManager
         }
     }
     
+    func enviarMensajeSinImagen(usuario: Usuario, info: Info, mensaje: String, completion: @escaping (String) -> Void)
+    {
+        let date = NSDate()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyyMMddHHmmssSSS"
+        
+        var result = formatter.string(from: date as Date)
+        let idMensaje = "A\(result)"
+        
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+        result = formatter.string(from: date as Date)
+        let fechaMensaje = result
+
+        
+        let path = "services.php?option=guardamensaje&idmensaje=\(idMensaje)&codigocliente=\(info.codigo)&codigousuario=\(usuario.codigousuario)&nombreusuario=\(usuario.nombreusuario)&tipousuario=\(usuario.tipousuario)&descripcionusuario=\(usuario.descripcion)&mensaje=\(mensaje)&fechamensaje=\(fechaMensaje)&imagen=\("")&tipomensaje=1&token=\("aaaaaaa")"
+        
+        let url = baseURL+path
+        let encodedUrl = url.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        
+        SVProgressHUD.show()
+        
+        Alamofire.request(encodedUrl!, method: .get, parameters: nil).responseJSON{ response in
+            if response.result.isSuccess
+            {
+                completion("OK")
+            }
+            else
+            {
+                completion("ERROR")
+            }
+        }
+        SVProgressHUD.dismiss()
+    }
+    
+    func enviarMensajeConImagen(usuario: Usuario, info: Info, imagen: UIImage, completion: @escaping (String) -> Void)
+    {
+        SVProgressHUD.show()
+        let date = NSDate()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyyMMddHHmmssSSS"
+
+        var result = formatter.string(from: date as Date)
+        let idMensaje = "A\(result)"
+
+        formatter.dateFormat = "yyyy-MM-dd HH:mm:ss.SSS"
+        result = formatter.string(from: date as Date)
+        let fechaMensaje = result
+
+        let params : [String:Any] = ["option":"guardamensaje" as NSString,
+                                     "idmensaje": idMensaje as NSString,
+                                     "codigocliente":info.codigo as NSString,
+                                     "codigousuario":usuario.codigousuario as NSString,
+                                     "nombreusuario":usuario.nombreusuario as NSString,
+                                     "tipousuario":usuario.tipousuario as NSString,
+                                     "descripcionusuario":usuario.descripcion as NSString,
+                                     "mensaje":"" as NSString,
+                                     "fechamensaje":fechaMensaje as NSString,
+                                     "tipomensaje":"2" as NSString,
+                                     "token":"aaaaaaa" as NSString]
+
+        let imgData = UIImageJPEGRepresentation(imagen, 1)
+        let headers: HTTPHeaders = [
+            /* "Authorization": "your_access_token",  in case you need authorization header */
+            "Content-type": "multipart/form-data"
+        ]
+
+        Alamofire.upload(multipartFormData: { (MultipartFormData) in
+
+             MultipartFormData.append(imgData!, withName: "imagen", fileName: "image.jpeg", mimeType: "image/jpeg")
+
+            for (key, value) in params {
+                MultipartFormData.append((value as AnyObject).data(using: String.Encoding.utf8.rawValue)!, withName: key as String)
+            }
+
+        }, usingThreshold: UInt64.init(), to: "http://64.239.5.63/MURO/services.php", method: .post, headers: headers) { (result) in
+                print(result)
+                switch result {
+                case .success(let upload, _, _):
+
+                    upload.responseJSON { response in
+                        print(response.result.value as Any)
+                        completion("OK")
+                    }
+
+                case .failure(let encodingError):
+                    print(encodingError)
+                    completion("ERROR")
+                }
+            SVProgressHUD.dismiss()
+        }
+
+////            to: "http://64.239.5.63/MURO/services.php"){
+////                (result) in
+////
+////                switch result {
+////                case .success(let upload, _, _):
+////
+////                    upload.responseJSON { response in
+////                        print(response.result.value as Any)
+////                        completion("OK")
+////                    }
+////
+////                case .failure(let encodingError):
+////                    print(encodingError)
+////                    completion("ERROR")
+////                }
+//
+//
+   }
+
+   
+    
 }
+
+
+

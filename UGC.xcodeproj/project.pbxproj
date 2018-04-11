@@ -29,6 +29,7 @@
 		4176BF2A20614562004BD0EE /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4176BF2820614562004BD0EE /* Main.storyboard */; };
 		4176BF2D20614562004BD0EE /* UGC.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 4176BF2B20614562004BD0EE /* UGC.xcdatamodeld */; };
 		4176BF3220614562004BD0EE /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 4176BF3020614562004BD0EE /* LaunchScreen.storyboard */; };
+		4199EB34207E3BE7006DCBAC /* GaleriaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4199EB33207E3BE7006DCBAC /* GaleriaViewController.swift */; };
 		41F32B952069DAC90085DDE3 /* MensajeTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F32B942069DAC90085DDE3 /* MensajeTableViewCell.swift */; };
 		41F32B972069E0310085DDE3 /* RoundUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41F32B962069E0310085DDE3 /* RoundUIView.swift */; };
 		DC8116AEA767B796430BC8F1 /* Pods_UGC.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D9B6A16320C2BCC7B6B4A489 /* Pods_UGC.framework */; };
@@ -59,6 +60,7 @@
 		4176BF2C20614562004BD0EE /* UGC.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = UGC.xcdatamodel; sourceTree = "<group>"; };
 		4176BF3120614562004BD0EE /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		4176BF3320614562004BD0EE /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		4199EB33207E3BE7006DCBAC /* GaleriaViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GaleriaViewController.swift; sourceTree = "<group>"; };
 		41F32B942069DAC90085DDE3 /* MensajeTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MensajeTableViewCell.swift; sourceTree = "<group>"; };
 		41F32B962069E0310085DDE3 /* RoundUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RoundUIView.swift; sourceTree = "<group>"; };
 		B512F6C73F4B9EF9572239A8 /* Pods-UGC.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UGC.debug.xcconfig"; path = "Pods/Target Support Files/Pods-UGC/Pods-UGC.debug.xcconfig"; sourceTree = "<group>"; };
@@ -155,6 +157,7 @@
 				416EC68720694944007A77A3 /* MensajesViewController.swift */,
 				41F32B942069DAC90085DDE3 /* MensajeTableViewCell.swift */,
 				411F7AD7206BC44600813CAD /* infoUIView.swift */,
+				4199EB33207E3BE7006DCBAC /* GaleriaViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -334,6 +337,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				411F7AD8206BC44600813CAD /* infoUIView.swift in Sources */,
+				4199EB34207E3BE7006DCBAC /* GaleriaViewController.swift in Sources */,
 				41371E18206400ED0079EFFE /* MuroTableViewCell.swift in Sources */,
 				41371E142063E2450079EFFE /* RoundButton.swift in Sources */,
 				4112CA112062B108005C82E2 /* APIManager.swift in Sources */,
