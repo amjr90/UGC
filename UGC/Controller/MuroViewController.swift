@@ -165,9 +165,6 @@ class MuroViewController: UIViewController, UITableViewDelegate, UITableViewData
         setSelected(button: comentarioButton, text: comentarioTextField,imageName: "comment")
         self.busquedaLabel.text = "Comentarios nuevos (0)"
     }
-    
-    
-
 }
 
 

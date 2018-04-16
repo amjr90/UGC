@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import SVProgressHUD
 
 struct StrechyHeader
 {
@@ -23,27 +24,22 @@ class MensajesViewController: UIViewController, UITableViewDelegate, UITableView
     @IBOutlet var mensajesTableViewTopConstraint: NSLayoutConstraint!
     @IBOutlet var camara: RoundUIView!
     @IBOutlet var infoView: infoUIView!
-    
     @IBOutlet var btnAttatch: UIButton!
     @IBOutlet var btnPhoto: UIButton!
-    
     @IBOutlet var comentarioTextField: UITextField!
-    
-    let apiManager = APIManager()
-    
-    var headerView : UIView!
-    var newHeaderLayer : CAShapeLayer!
-    
-    var usuario:Usuario!
-    var info:Info!
-    
-    var infoMensajes = [InfoMensaje]()
-    
-    var images = [UIImage]()
-    
     @IBOutlet var comentarioBarConstraint: NSLayoutConstraint!
     
+    let apiManager = APIManager()
+    var headerView : UIView!
+    var newHeaderLayer : CAShapeLayer!
+    var usuario:Usuario!
+    var info:Info!
+    var infoMensajes = [InfoMensaje]()
+    var images = [UIImage]()
+    var imagenesGeleria = [String]()
     var imagePicker: UIImagePickerController!
+    var idMensaje = "idMensaje"
+    
     override func viewDidLoad()
     {
         super.viewDidLoad()
@@ -92,9 +88,9 @@ class MensajesViewController: UIViewController, UITableViewDelegate, UITableView
         apiManager.buscarMensajes(codigoUsuario: usuario.codigousuario, codigoCliente: info.codigo) { (infos) in
             
             self.infoMensajes = infos
-           
             self.mensajesTableView.reloadData()
             self.animateTable()
+            
         }
     }
     
@@ -164,9 +160,11 @@ class MensajesViewController: UIViewController, UITableViewDelegate, UITableView
         return infoMensajes.count
     }
     
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell
+    {
         let cell = tableView.dequeueReusableCell(withIdentifier: "mensajesCell", for: indexPath) as! MensajeTableViewCell
         
+        cell.resetImg()
         cell.tituloLabel.text = infoMensajes[indexPath.row].nombreusuario
         cell.textoLabel.text = infoMensajes[indexPath.row].descripcionusuario
         cell.fechaLabel.text = infoMensajes[indexPath.row].fechamensaje
@@ -178,25 +176,64 @@ class MensajesViewController: UIViewController, UITableViewDelegate, UITableView
             if(self.infoMensajes[indexPath.row].image == nil)
             {
                 apiManager.getImageFromUrl(url: infoMensajes[indexPath.row].imagen) { (image) in
-                    self.infoMensajes[indexPath.row].image = image
-                    cell.imagen.image = self.infoMensajes[indexPath.row].image
+                    
+                    var scaledImg = UIImage()
+                    
+                    if(image.size.height > CGFloat(600))
+                    {
+                        scaledImg = self.resizeImage(image: image, scaleFactor: 0.3)
+                        //scaledImg = self.resizeImage2(image: image)
+                    }
+                    else if(image.size.height < CGFloat(300))
+                    {
+                        scaledImg = self.resizeImage(image: image, scaleFactor: 2)
+                        //scaledImg = self.resizeImage2(image: image)
+                    }
+                    else
+                    {
+                        scaledImg = image
+                    }
+                    
+                    self.infoMensajes[indexPath.row].image = scaledImg
+                    //cell.imagen.image = self.infoMensajes[indexPath.row].image
+                    cell.setMensajeImagen(img: self.infoMensajes[indexPath.row].image)
                     self.mensajesTableView.reloadData()
                     cell.setNeedsLayout()
                 }
             }
             else
             {
-                cell.imagen.image = self.infoMensajes[indexPath.row].image
+                //cell.imagen.image = self.infoMensajes[indexPath.row].image
+                cell.setMensajeImagen(img: self.infoMensajes[indexPath.row].image)
                 cell.layoutIfNeeded()
             }
         }
         else
         {
-             cell.imagen.image = nil
+             cell.resetImg()
         }
         
-        
         return cell
+    }
+    
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath)
+    {
+        if(infoMensajes[indexPath.row].imagen != "")
+        {
+            idMensaje = infoMensajes[indexPath.row].idmensaje
+            performSegue(withIdentifier: "goToGaleria", sender: self)
+        }
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?)
+    {
+        if(segue.identifier == "goToGaleria")
+        {
+            let destinationVC = segue.destination as! GaleriaViewController
+            destinationVC.infos = infoMensajes
+            destinationVC.idMensaje = idMensaje
+        }
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView)
@@ -268,7 +305,9 @@ class MensajesViewController: UIViewController, UITableViewDelegate, UITableView
         {
             cell.transform = CGAffineTransform(translationX: 0, y: tableViewHeight)
         }
+        
         var delayCounter:Double = 0;
+        
         for cell in cells
         {
             UIView.animate(withDuration: 1, delay: delayCounter * 0.05, usingSpringWithDamping: 0.8, initialSpringVelocity: 0, options: .curveEaseInOut, animations: {
@@ -285,20 +324,6 @@ class MensajesViewController: UIViewController, UITableViewDelegate, UITableView
         button.setImage(tintedImage, for: .normal)
         button.tintColor = UIColor(hexString: "209689")
     }
-    
-//    func textFieldDidBeginEditing(_ textField: UITextField) {
-//        UIView.animate(withDuration: 0.25) {
-//            self.comentarioBarConstraint.constant = -250
-//            self.view.layoutIfNeeded()
-//        }
-//    }
-//
-//    func textFieldDidEndEditing(_ textField: UITextField) {
-//        UIView.animate(withDuration: 0.25) {
-//            self.comentarioBarConstraint.constant = 0
-//            self.view.layoutIfNeeded()
-//        }
-//    }
     
     @objc func keyboardWillShow(notification: Notification)
     {
@@ -325,13 +350,13 @@ class MensajesViewController: UIViewController, UITableViewDelegate, UITableView
     
     @IBAction func botonCargarFoto(_ sender: Any)
     {
-        openCamera()
+        openLibrary()
     }
     
     
     @IBAction func botonTomarFoto(_ sender: Any)
     {
-        openLibrary()
+        openCamera()
     }
     
     @IBAction func botonEnviarMensaje(_ sender: Any)
@@ -349,53 +374,97 @@ class MensajesViewController: UIViewController, UITableViewDelegate, UITableView
         }
     }
     
-    func openCamera() {
+    func openCamera()
+    {
         imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         imagePicker.sourceType = .camera
         present(imagePicker, animated: true, completion: nil)
     }
     
-    func openLibrary() {
+    func openLibrary()
+    {
         imagePicker = UIImagePickerController()
         imagePicker.delegate = self
         imagePicker.sourceType = .photoLibrary
         present(imagePicker, animated: true, completion: nil)
     }
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        let image = info[UIImagePickerControllerOriginalImage] as! UIImage
-
-        
-        apiManager.enviarMensajeConImagen(usuario: usuario, info: self.info, imagen: image) { (result) in
-            self.dismissKeyboard()
-            if result == "OK"
-            {
-                self.buscarMensajes()
-            }
-            else
-            {
-                print("error")
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any])
+    {
+        dismiss(animated: true)
+        {
+            let image = info[UIImagePickerControllerOriginalImage] as! UIImage
+            let imageData = UIImageJPEGRepresentation(image,0.0)
+            
+            self.apiManager.enviarMensajeConImagen(usuario: self.usuario, info: self.info, imgData: imageData!) { (result) in
+                self.dismissKeyboard()
+                if result == "OK"
+                {
+                    self.buscarMensajes()
+                    SVProgressHUD.dismiss()
+                }
+                else
+                {
+                    print("error")
+                }
             }
         }
-        
-        dismiss(animated:true, completion: nil)
     }
+    
+    
 }
 
 extension UIViewController
 {
     func hideKeyboard()
     {
-        let tap: UITapGestureRecognizer = UITapGestureRecognizer(
-            target: self,
-            action: #selector(UIViewController.dismissKeyboard))
-        
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
         view.addGestureRecognizer(tap)
+        tap.cancelsTouchesInView = false
     }
     
     @objc func dismissKeyboard()
     {
         view.endEditing(true)
+    }
+    
+    func resizeImage(image: UIImage, scaleFactor: CGFloat) -> UIImage
+    {
+        let img = image
+        
+        let size = __CGSizeApplyAffineTransform(img.size, CGAffineTransform(scaleX: scaleFactor, y: scaleFactor))
+        
+        let hasAlpha = false
+        let scale = CGFloat(0.0)
+        
+        UIGraphicsBeginImageContextWithOptions(size, !hasAlpha, scale)
+        img.draw(in: CGRect(origin: CGPoint.zero, size: size))
+        
+        let scaledImg = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        return scaledImg!
+    }
+    
+    func resizeImage2(image: UIImage) -> UIImage
+    {
+        let cgImage = image.cgImage
+        
+        let width = (cgImage?.width)! / 2
+        let height = (cgImage?.height)! / 2
+        let bitsPerComponent = cgImage?.bitsPerComponent
+        let bitsPerRow = cgImage?.bytesPerRow
+        let colorSpace = cgImage?.colorSpace
+        let bitmapInfo  = cgImage?.bitmapInfo
+        
+        let context = CGContext(data: nil, width: width, height: height, bitsPerComponent: bitsPerComponent!, bytesPerRow: bitsPerRow!, space: colorSpace!, bitmapInfo: (bitmapInfo?.rawValue)!)
+        
+        context?.interpolationQuality = .high
+        
+        context?.draw(cgImage!, in: CGRect(origin: CGPoint.zero, size: CGSize(width: width, height: height)))
+        
+        let scaledImage = UIImage(cgImage: (context?.makeImage())!)
+        return scaledImage
     }
 }

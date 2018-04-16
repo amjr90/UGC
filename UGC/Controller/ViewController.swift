@@ -136,6 +136,8 @@ class ViewController: UIViewController {
     
 //MARK - Verifica la orientacion de la pantalla
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        
         if UIDevice.current.orientation.isLandscape
         {
             heightConstraint.isActive = true

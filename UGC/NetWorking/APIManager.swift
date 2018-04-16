@@ -148,6 +148,10 @@ class APIManager
             if let image = response.result.value {
                 completion(image)
             }
+            else
+            {
+                //print("error")
+            }
         }
     }
     
@@ -185,7 +189,7 @@ class APIManager
         SVProgressHUD.dismiss()
     }
     
-    func enviarMensajeConImagen(usuario: Usuario, info: Info, imagen: UIImage, completion: @escaping (String) -> Void)
+    func enviarMensajeConImagen(usuario: Usuario, info: Info, imgData: Data, completion: @escaping (String) -> Void)
     {
         SVProgressHUD.show()
         let date = NSDate()
@@ -206,34 +210,44 @@ class APIManager
                                      "nombreusuario":usuario.nombreusuario as NSString,
                                      "tipousuario":usuario.tipousuario as NSString,
                                      "descripcionusuario":usuario.descripcion as NSString,
+                                     "imagen":"" as NSString,
                                      "mensaje":"" as NSString,
                                      "fechamensaje":fechaMensaje as NSString,
                                      "tipomensaje":"2" as NSString,
                                      "token":"aaaaaaa" as NSString]
 
-        let imgData = UIImageJPEGRepresentation(imagen, 1)
+        
         let headers: HTTPHeaders = [
-            /* "Authorization": "your_access_token",  in case you need authorization header */
             "Content-type": "multipart/form-data"
         ]
 
         Alamofire.upload(multipartFormData: { (MultipartFormData) in
 
-             MultipartFormData.append(imgData!, withName: "imagen", fileName: "image.jpeg", mimeType: "image/jpeg")
+            MultipartFormData.append(imgData, withName: "file", fileName: "image.jpeg", mimeType: "image/jpeg")
 
             for (key, value) in params {
                 MultipartFormData.append((value as AnyObject).data(using: String.Encoding.utf8.rawValue)!, withName: key as String)
             }
 
-        }, usingThreshold: UInt64.init(), to: "http://64.239.5.63/MURO/services.php", method: .post, headers: headers) { (result) in
+        },to: "http://64.239.5.63/MURO/services.php", method: .post, headers: headers) { (result) in
                 print(result)
                 switch result {
                 case .success(let upload, _, _):
 
-                    upload.responseJSON { response in
-                        print(response.result.value as Any)
+//                    upload.responseJSON { response in
+//                        print(response.result.debugDescription)
+//                        completion("OK")
+//                    }
+                    
+//                    upload.response(completionHandler: { (response) in
+//                        print(response)
+//                        completion("OK")
+//                    })
+                    
+                    upload.responseString(completionHandler: { (response) in
+                        print(response.result.debugDescription)
                         completion("OK")
-                    }
+                    })
 
                 case .failure(let encodingError):
                     print(encodingError)
@@ -260,10 +274,11 @@ class APIManager
 //
 //
    }
-
-   
     
 }
+
+    
+
 
 
 

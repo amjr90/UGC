@@ -19,6 +19,7 @@ class MensajeTableViewCell: UITableViewCell {
     @IBOutlet weak var comentariosUIImageView: UIImageView!
     @IBOutlet weak var likeUIImageView: UIImageView!
     @IBOutlet weak var copyUIImageView: UIImageView!
+    @IBOutlet weak var uiViewImage: UIView!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -32,6 +33,16 @@ class MensajeTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
 
         // Configure the view for the selected state
+    }
+    
+    func setMensajeImagen(img: UIImage)
+    {
+        imagen.image = img
+    }
+    
+    func resetImg()
+    {
+        imagen.image = nil
     }
 
     func setImage(uiImageView: UIImageView)

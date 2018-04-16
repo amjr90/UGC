@@ -10,6 +10,8 @@
 		4107DA242062FB4200B5C1DE /* MuroViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4107DA232062FB4200B5C1DE /* MuroViewController.swift */; };
 		4112CA112062B108005C82E2 /* APIManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4112CA102062B108005C82E2 /* APIManager.swift */; };
 		4112CA132062B774005C82E2 /* Usuario.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4112CA122062B774005C82E2 /* Usuario.swift */; };
+		41185ED1207EA21300478FCF /* imageView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 41185ED0207EA21300478FCF /* imageView.xib */; };
+		41185ED3207EA25A00478FCF /* imageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 41185ED2207EA25A00478FCF /* imageViewController.swift */; };
 		411F7AD8206BC44600813CAD /* infoUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411F7AD7206BC44600813CAD /* infoUIView.swift */; };
 		411F7ADC206BDBB400813CAD /* ColorImageView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 411F7ADB206BDBB400813CAD /* ColorImageView.swift */; };
 		4125DD6620656D7B00DF3AFF /* CustomWindows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4125DD6520656D7B00DF3AFF /* CustomWindows.swift */; };
@@ -39,6 +41,8 @@
 		4107DA232062FB4200B5C1DE /* MuroViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MuroViewController.swift; sourceTree = "<group>"; };
 		4112CA102062B108005C82E2 /* APIManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIManager.swift; sourceTree = "<group>"; };
 		4112CA122062B774005C82E2 /* Usuario.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Usuario.swift; sourceTree = "<group>"; };
+		41185ED0207EA21300478FCF /* imageView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = imageView.xib; sourceTree = "<group>"; };
+		41185ED2207EA25A00478FCF /* imageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = imageViewController.swift; sourceTree = "<group>"; };
 		411F7AD7206BC44600813CAD /* infoUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = infoUIView.swift; sourceTree = "<group>"; };
 		411F7ADB206BDBB400813CAD /* ColorImageView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorImageView.swift; sourceTree = "<group>"; };
 		4125DD6520656D7B00DF3AFF /* CustomWindows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomWindows.swift; sourceTree = "<group>"; };
@@ -158,6 +162,7 @@
 				41F32B942069DAC90085DDE3 /* MensajeTableViewCell.swift */,
 				411F7AD7206BC44600813CAD /* infoUIView.swift */,
 				4199EB33207E3BE7006DCBAC /* GaleriaViewController.swift */,
+				41185ED2207EA25A00478FCF /* imageViewController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -184,6 +189,7 @@
 				41371E15206400C30079EFFE /* muroCell */,
 				4176BF3020614562004BD0EE /* LaunchScreen.storyboard */,
 				4176BF2820614562004BD0EE /* Main.storyboard */,
+				41185ED0207EA21300478FCF /* imageView.xib */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -262,6 +268,7 @@
 				4176BF3220614562004BD0EE /* LaunchScreen.storyboard in Resources */,
 				412FD82120618FFF0079642A /* montserrat_regular.otf in Resources */,
 				4176BF2A20614562004BD0EE /* Main.storyboard in Resources */,
+				41185ED1207EA21300478FCF /* imageView.xib in Resources */,
 				412FD82020618FFF0079642A /* montserrat_bold.otf in Resources */,
 				416126342061A50C0077278A /* Assets.xcassets in Resources */,
 			);
@@ -354,6 +361,7 @@
 				41F32B972069E0310085DDE3 /* RoundUIView.swift in Sources */,
 				4107DA242062FB4200B5C1DE /* MuroViewController.swift in Sources */,
 				41371E122063E1B60079EFFE /* TextFieldBorder.swift in Sources */,
+				41185ED3207EA25A00478FCF /* imageViewController.swift in Sources */,
 				4143E581206431BE00D974E3 /* Info.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
